@@ -11,18 +11,7 @@ exporters:
   prometheus:
     endpoint: "0.0.0.0:8889"
     const_labels:
-      label1: value1
-
-  logging:
-
-  zipkin:
-    endpoint: "http://zipkin.railway.internal:9411/api/v2/spans"
-    format: proto
-
-  otlp/jaeger:
-    endpoint: jaeger.railway.internal:4317
-    tls:
-      insecure: true
+      service: meter-otlp
 
 processors:
   batch:
@@ -37,11 +26,7 @@ extensions:
 service:
   extensions: [pprof, zpages, health_check]
   pipelines:
-    traces:
-      receivers: [otlp]
-      processors: [batch]
-      exporters: [logging, zipkin, otlp/jaeger, debug]
     metrics:
       receivers: [otlp]
       processors: [batch]
-      exporters: [logging, prometheus, debug]
+      exporters: [prometheus, debug]
